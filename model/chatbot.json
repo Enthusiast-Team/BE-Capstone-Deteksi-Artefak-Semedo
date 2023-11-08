@@ -1,0 +1,137 @@
+{"intents": [
+     {"tag": "Intro",
+     "patterns": ["hi", 
+                    "how are you", 
+                    "is anyone there", 
+                    "hello", 
+                    "whats up",
+                    "hey",
+                    "yo",
+                    "listen",
+                    "please help me",
+                    "i am learner from",
+                    "i belong to",
+                    "aiml batch",
+                    "aifl batch",
+                    "i am from",
+                    "my pm is",
+                    "blended",
+                    "online",
+                    "i am from",
+                    "hey ya",
+                    "talking to you for first time"],
+     "responses": ["Halo Sobat Semedo, apa ada yang bisa saya bantu?"],
+     "context_set": ""
+     },
+     {"tag": "Exit",
+     "patterns": ["thank you", 
+                    "thanks", 
+                    "cya",
+                    "see you",
+                    "later", 
+                    "see you later", 
+                    "goodbye", 
+                    "i am leaving", 
+                    "have a Good day",
+                    "you helped me",
+                    "thanks a lot",
+                    "thanks a ton",
+                    "you are the best",
+                    "great help",
+                    "too good",
+                    "you are a good learning buddy"],
+     "responses": ["terimakasih telah mengunjungin situs kami."],
+     "context_set": ""
+     },
+
+     {"tag": "Semedo",
+     "patterns": ["apa itu semedo",
+                    "apa itu museum semedo",
+                    "apa yang di maksud museum semedo",
+                    "museum semedo adalah"],
+     "responses": ["Museum Semedo merupakan pusat informasi dan ilmu pengetahuan purbakala serta penelitian arkeologi nasional. Ia berharap museum itu diharapkan mampu menjadi bagian dari upaya konservasi dan pelestarian kawasan cagar budaya dan sekitarnya."],
+     "context_set": ""
+     },
+
+     {"tag": "Sejarah",
+     "patterns": ["apa yang dapat Anda sampaikan tentang sejarah Museum Semedo?",
+                  "sejarah semedo",
+                  "sejarah",
+                  "sejarah tentang semedo",
+                  "sejarah terkait semode",
+                  "apa sejarah dari semedo",
+                  "jelaskan sejarah semedo"],
+                  "responses": ["Museum Semedo dibangun secara bertahap sejak tahun 2015 dan diresmikan pada tahun 2022. Untuk informasi lebih lanjut, Anda dapat mengunjungi di https://bit.ly/sejarah-semedo."],
+     "context_set": ""
+     },
+
+     {"tag": "Semedo_Berdiri",
+     "patterns": ["kapan Museum Semedo didirikan"],
+     "responses": ["Museum Semedo dibangun secara bertahap sejak tahun 2015 dan diresmikan pada tahun 2022. Untuk informasi lebih lanjut, Anda dapat mengunjungi di https://bit.ly/sejarah-semedo."],
+     "context_set": ""
+     },
+
+     {"tag": "Koleksi_semedo",
+     "patterns": ["apa saja koleksi seni atau artefak yang ada di Museum Semedo",
+                "koleksi museum semedo",
+                "sebutkan koleksi museum semedo"],
+     "responses": ["Adapun koleksi seni atau ertefak di museum semedo antara lain : Evolusi manusia purba, Sejarah pembentukan galaksi Bima Sakti hingga pulau Jawa, Tengkorak manusia purba, Peralatan yang digunakan oleh manusia purba, Diorama pencarian fosil purba di Semedo, Diorama kehidupan manusia purba, Fosil manusia pertama dan hewan purba."],
+     "context_set": ""
+     },
+
+     {"tag": "Tiket",
+     "patterns": ["bagaimana cara saya bisa mengunjungi Museum Semedo",
+                  "pesan tiket",
+                  "bagaimana cara pesan tiket",
+                  "berapa biaya tiket masuk"],
+     "responses": ["Gratis tanpa dipungut biaya, bagi Anda yang tertarik mengunjungi Museum Situs Semedo bisa melakukan kunjungan pada pukul 08.00 WIB-15.30. WIB (Selasa-Minggu). Sebelum tiba di lokasi, pengunjung wajib reservasi secara online maksimal H-1 kunjungan pada link yang tertera di laman Instagram @museumsemedo."],
+     "context_set": ""
+     },
+
+     {"tag": "Motivasi",
+     "patterns": ["siapa yang mendirikan Museum Semedo",
+                  "pendiri museum",
+                  "siapa saja pendiri museum"],
+     "responses": ["peletakan batu pertama di Desa Semedo, Kecamatan Kedungbanteng oleh Direktur Jenderal (Dirjen) Kebudayaan Kementerian Pendidikan dan Kebudayaan RI, Prof. Dr. Kacung Marijan, dan Bupati Tegal, Enthus Susmono, pada Kamis (30/4/2015), menjadi awal pembangunan Museum Situs Semedo."],
+     "context_set": ""
+     },
+
+
+     {"tag": "Tujuan",
+     "patterns": ["apa tujuan adanya Museum Semedo"],
+     "responses": ["Selain akan menjadi destinasi wisata edukasi unggulan Kabupaten Tegal, keberadaan Museum Situs Semedo juga diharapkan mampu menjadi bagian dari upaya konservasi dan pelestarian kawasan cagar budaya di sekitarnya."],
+     "context_set": ""
+     },
+
+     {"tag": "Fasilitas",
+     "patterns": ["apakah Museum Semedo memiliki fasilitas untuk anak-anak, seperti program pendidikan atau ruang bermain"],
+     "responses": ["Fasilitas yang ada di sekitar museum semedo diantaranya : Warung-warung makanan dan minuman, Area untuk menyimpan kendaraan, Toilet, Pemandu wisata, Mushola, Kantin, Toko Souvenir dan masih banyak lagi."],
+     "context_set": ""
+     },
+
+     {"tag": "Pelajaran_Sejarah",
+     "patterns": ["pelajaran bersejarah apa yanag di dapatkan di museum semedo"],
+     "responses": ["Pelajaran bersejarah yang kita dapatkan pada museum semedo, kita dapat mengetahui sejarah jaman Dahulu dimana ada kehidupan manuasia purba, hewan-hewan langka yang pernah ada dan sekarang sudah mulai punah, mengenali fosil-fosil bersejarah."],
+     "context_set": ""
+     },
+
+     {"tag": "Souvenir_Semedo",
+     "patterns": ["bagaimana proses kunjungan di semedo"],
+     "responses": ["Sobat Semedo bisa daftar melalui IG resmi Semedo dan untuk biaya masuk gratis, kemudian datang sesuai dengan jadwal yang di tentukan, ketika kunjungan di dalam museum sobat semedo akan di pandu oleh pemandu dan akan di jelaskan satu persatu sejarah, fosil, samapi dengan artefak oleh pemandu."],
+     "context_set": ""
+     },
+
+     {"tag": "Lokasi",  
+     "patterns": ["dimana lokasi museum semedo"],
+     "responses": ["Lokasi Museum semedo terletak di Desa Semedo, Kecamatan Kedungbanteng, Kabupaten Tegal, Jawa Tengah 52472"],
+     "context_set": ""
+     },
+
+     {"tag": "kunjungan",
+     "patterns": ["apakah pengujung di perbolehkan berfoto di museum"],
+     "responses": ["Sobat semedo di perbolehkan untuk berswafoto di area artefak semedo tetapi tidak di perbolehkan untuk menyentuh artefak yang mengandung zat kimia berbahaya, tetapi ada juga artefak yang boleh di pegang dan tidak mengandung zat kimia berbahaya."],
+     "context_set": ""
+     }
+     
+   ]
+}
