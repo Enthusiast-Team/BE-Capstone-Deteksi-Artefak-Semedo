@@ -200,7 +200,7 @@ class Chatbot:
     def __init__(self, model_path):
         # Pindahkan model loading ke dalam __init__
         self.model = load_model(model_path)
-        self.intents = json.loads(open("./modelai/chatbot.json").read())
+        self.intents = json.loads(open("./modelai/intents.json").read())
         self.words = pickle.load(open('./modelai/words.pkl', 'rb'))
         self.classes = pickle.load(open('./modelai/classes.pkl', 'rb'))
         self.lemmatizer = WordNetLemmatizer()
