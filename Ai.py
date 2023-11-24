@@ -15,8 +15,6 @@ import nltk
 nltk.download('punkt')
 nltk.download('wordnet')
 
-
-
 model = load_model('./modelai/modelMobileNet.h5')
 # chatbot_model = load_model('./model/chatbot.h5')
 
@@ -44,16 +42,17 @@ label_mapping = dict(zip(target_names, display_names))
 class Predict(Resource):
     def post(self):
         try:
-            data = request.json
+            jsonObj = request.json
+            data = jsonObj['message']
             img = base64_to_pil(data)
             pred = model_predict(img, model)
             hasil_label = label_mapping[target_names[np.argmax(pred)]]
             hasil_prob = "{:.2f}".format(100 * np.max(pred))
-            return make_response(jsonify({
-                'status': '200', 'error': 'false', 'message': 'Berhasil melakukan prediksi', 'nama': hasil_label, 'probability': hasil_prob}))
+            return {'message': 'Berhasil melakukan prediksi', 'nama': hasil_label, 'probability': hasil_prob}, 200
 
         except Exception as e:
-            return make_response(jsonify({'status': '400', 'error': 'true', 'message': str(e), 'nama': '', 'probability': ''}))
+            print("EXCEPTION in Predict POST")
+            return {'message': str(e), 'nama': '', 'probability': ''}, 400
 
 # Implementasi Model Chatbot
 class Chatbot:
@@ -109,13 +108,3 @@ class Chatbot:
 
 # Buat instance Chatbot
 chatbot_instance = Chatbot('./modelai/chatbot.h5')
-
-# Pengenalan Artefak
-{
-    "" : "(paste code base64 hasil convert)"
-}
-
-# Pengenalan Artefak
-{
-    "message" : "(pertanyaan)"
-}

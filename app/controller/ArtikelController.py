@@ -32,3 +32,7 @@ class ArtikelController:
     def hapus_artikel(artikel):
         db.session.delete(artikel)
         db.session.commit()
+
+    @staticmethod
+    def dapatkan_artikel_by_judul(judul):
+        return Artikel.query.filter_by(judul=judul).first()

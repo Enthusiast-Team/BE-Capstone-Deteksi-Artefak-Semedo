@@ -99,6 +99,32 @@ def hapus_artikel(artikel_id):
         return jsonify({'message': 'Artikel berhasil dihapus'}), 200
     else:
         return jsonify({'message': 'Artikel tidak ditemukan'}), 404
+    
+@app.route('/artikel/<judul>', methods=['GET'])
+def dapatkan_artikel_by_judul(judul):
+    artikel = ArtikelController.dapatkan_artikel_by_judul(judul)
+
+    if artikel:
+        # Jika artikel ditemukan, kembalikan data artikel dalam format JSON
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'id': artikel.id,
+                'judul': artikel.judul,
+                'gambar': artikel.gambar,
+                'isi': artikel.isi,
+                'created_at': artikel.created_at,
+                'update_at': artikel.update_at,
+                'category_id': artikel.category_id,
+                # 'nama': artikel.nama  # Sertakan nama jika diperlukan
+            }
+        }), 200
+    else:
+        # Jika artikel tidak ditemukan, kembalikan pesan error
+        return jsonify({
+            'status': 'error',
+            'message': 'Artikel tidak ditemukan.'
+        }), 404
 
 
 from app.controller.CatagoryController import CategoryController
