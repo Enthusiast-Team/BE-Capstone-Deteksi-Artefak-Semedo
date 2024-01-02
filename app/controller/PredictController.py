@@ -5,12 +5,13 @@ from keras.models import load_model
 from keras.utils import img_to_array
 from flask_restful import Resource
 from flask_ngrok import run_with_ngrok
+from tensorflow import keras
+from tensorflow.keras.utils import load_img, img_to_array
 
 
 
-
-model = load_model('./modelai/modelMobileNet.h5')
-# chatbot_model = load_model('./model/chatbot.h5')
+model = load_model('./modelai/modelMobileNetNew.h5')
+# # chatbot_model = load_model('./model/chatbot.h5')
 
 def model_predict(img, model):
     img = img.resize((224, 224))
@@ -21,16 +22,42 @@ def model_predict(img, model):
     preds = model.predict(x)
     return preds
 
-target_names = ['gigi_hiu', 
-                'gigi_gajah', 
-                'gigi_buaya',
+target_names = ['australopithecus_aferensis', 
+                'badak_bercula_satu', 
+                'batu_lempung_krisikan',
+                'fauna_darat_semedo',
+                'fragmen_tengkorak',
                 'fragmen_tengkorak_parential',
-                'badak_bercula_1']
-display_names = ['gigi_hiu', 
-                'gigi_gajah', 
-                'gigi_buaya', 
-                'fragmen_tengkorak_parential', 
-                'badak_bercula_1']
+                'fragmen_tengkorak_sambung_macan',
+                'fragmen_tulang_fermur_bawah',
+                'gigi_buaya',
+                'gigi_gajah',
+                'gigi_hiu',
+                'homo_erectus_ngawi',
+                'homo_habilis',
+                'homo_sapiens_wajak',
+                'kapak_penetak',
+                'kapak_primbas']
+
+display_names = ['australopithecus_aferensis', 
+                'badak_bercula_satu', 
+                'batu_lempung_krisikan',
+                'fauna_darat_semedo',
+                'fragmen_tengkorak',
+                'fragmen_tengkorak_parential',
+                'fragmen_tengkorak_sambung_macan',
+                'fragmen_tulang_fermur_bawah',
+                'gigi_buaya',
+                'gigi_gajah',
+                'gigi_hiu',
+                'homo_erectus_ngawi',
+                'homo_habilis',
+                'homo_sapiens_wajak',
+                'kapak_penetak',
+                'kapak_primbas']
+    
+# with open('modelai/num_16class_artefak.pkl', 'rb') as f:
+#     classes_artefak = pickle.load(f)
 label_mapping = dict(zip(target_names, display_names))
 
 class Predict(Resource):
