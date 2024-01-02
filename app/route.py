@@ -10,6 +10,7 @@ from flask_cors import CORS
 import pandas as pd
 import matplotlib.pyplot as plt
 import pymysql
+import joblib
 
 #Implementasi Model
 import nltk
@@ -105,13 +106,14 @@ def index():
         train_vector = vectorizer.fit_transform(data_train)
         reviews2 = [" ".join(r) for r in reviews]
 
-        load_model = pickle.load(open('modelai/revisi_hasil_sentimen.pkl','rb'))
+        # load_model = pickle.load(open('./modelai/revisi_hasil_sentimen.pkl','rb'))
+        load_model = joblib.load('./modelai/revisi_hasil_sentimen.pkl')
 
         result = []
 
         for test in reviews2:
             test_data = [str(test)]
-            test_vector = vectorizer.transform(test_data)
+            test_vector = vectorizer.transform(test_data).toarray()
             pred = load_model.predict(test_vector)
             result.append(pred[0])
             
@@ -180,9 +182,9 @@ def index():
 
     data = data[['review', 'label']]
     # Menghitung jumlah data dengan label positif, negatif, dan netral
-    jumlah_positif = len(data[data['label'] == 1])
-    jumlah_negatif = len(data[data['label'] == 0])
-    jumlah_netral = len(data[data['label'] == -1])
+    jumlah_positif = len(data[data['label'] == 5])
+    jumlah_negatif = len(data[data['label'] == 1])
+    jumlah_netral = len(data[data['label'] == 3])
 
     # Membuat bar chart dengan warna yang berbeda
     # fig, ax = plt.subplots()
