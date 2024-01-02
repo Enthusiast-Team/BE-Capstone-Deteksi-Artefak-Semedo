@@ -1,0 +1,36 @@
+,id_hasil_model,id_review,nama,tanggal,review,label
+0,13,1,User1,2023-12-04,Aplikasi ini sangat membantu dan mudah digunakan.,1
+1,14,2,User2,2023-12-04,Website ini memberikan pengalaman yang luar biasa.,1
+2,15,3,User3,2023-12-04,Saya sangat puas dengan fitur-fitur yang disediakan.,1
+3,16,4,User4,2023-12-04,Layanan pelanggan yang ramah dan responsif.,1
+4,17,5,User5,2023-12-04,Aplikasi ini membuat hidup saya lebih mudah dan efisien.,1
+5,18,6,User6,2023-12-04,"Banyak bug pada aplikasi, membuat pengalaman buruk.",0
+6,19,7,User7,2023-12-04,Navigasi website sangat membingungkan dan lambat.,0
+7,20,8,User8,2023-12-04,Fitur-fitur yang ditawarkan kurang memuaskan.,0
+8,21,9,User9,2023-12-04,Aplikasi sering crash dan tidak stabil.,0
+9,22,10,User10,2023-12-04,Pelayanan pelanggan sangat buruk dan tidak responsif.,0
+10,23,11,User11,2023-12-04,Saya merasa biasa saja dengan aplikasi ini.,-1
+11,24,12,User12,2023-12-04,Website ini memiliki kelebihan dan kekurangan masing-masing.,-1
+12,25,13,User13,2023-12-04,Tidak terlalu terkesan dengan fitur-fitur yang disediakan.,-1
+13,26,14,User14,2023-12-04,Penggunaan aplikasi ini standar saja.,-1
+14,27,15,User15,2023-12-04,Tidak ada yang istimewa dari website ini.,-1
+15,28,16,User16,2023-12-05,Aplikasi ini Sangat Berguna dan sangat responsif,-1
+16,29,17,Saya,2023-12-09,ulasan bebas bagus,5
+17,30,18,test,2023-12-09,ulasan bebas bagus,5
+18,31,19,hay,2023-12-09,ulasan bebas bagus sekali,5
+19,32,20,khadik,2023-12-23,aplikisi ini sungguh bagus,-1
+20,33,21,khadikq,2023-12-29,aplikasi ini sangat keren,5
+21,34,22,ilham,2023-12-29,mengaggumkan sekali aplikasi ini,5
+22,40,23,khadiksd,2023-12-29,aplikasi ini sangat bagus,-1
+23,41,24,khadikwe,2023-12-29,aplikasi ini sangat bagus,-1
+24,42,25,mohmadsd khadik ds,2023-12-29,KEREN APLIKASI NYA ,-1
+25,43,26,mohmad khadik ,2023-12-29,"MATNAP BENER APLIKASI NYA
+",-1
+26,44,43,haikal,2023-12-30,aplikasi bagus,-1
+27,45,44,khadik,2023-12-30,aplikasi seunbggu bagus ,-1
+28,46,45,khadik,2023-12-30,keren juga nih aplikasi nya,-1
+29,47,46,khadik,2023-12-30,keren,-1
+30,48,47,khadik,2023-12-30,aplikasi nya buruk,0
+31,49,48,khadik,2023-12-30,palikasi sangat bagus,-1
+32,50,49,khadik,2023-12-30,hanya itu saja,-1
+33,51,50,mohamad khadik,2024-01-01,apikasi keren,5

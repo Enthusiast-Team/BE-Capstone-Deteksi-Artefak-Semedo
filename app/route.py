@@ -2,12 +2,205 @@ from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
 from app import app
 from app.controller.ArtikelController import ArtikelController
-from Ai import chatbot_instance, Predict
+from app.controller.ChatbotController import chatbot_instance
+from app.controller.PredictController import Predict
+from app.controller.SentimenCntroller import read_mysql_table, is_table_empty
+from app.controller.ImplementasiSentiman import  insert_data_to_mysql
 from flask_cors import CORS
+import pandas as pd
+import matplotlib.pyplot as plt
+import pymysql
+
+#Implementasi Model
+import nltk
+import re
+import pickle
+from sklearn.utils.multiclass import unique_labels
+from sklearn.feature_extraction.text import TfidfVectorizer
+from nltk.tokenize import TweetTokenizer
 
 
 api = Api(app)
 CORS(app)
+
+
+@app.route('/tambah_review', methods=['POST'])
+def tambah_review():
+    data = request.json
+    try:
+        insert_data_to_mysql(data)
+        return jsonify({'status': 'sukses', 'pesan': 'Data berhasil ditambahkan ke database'}), 201
+    except Exception as e:
+        return jsonify({'status': 'error', 'pesan': str(e)}), 500
+    
+@app.route('/sentimen')
+def index():
+    table_name = 'input_review'
+    if not is_table_empty(table_name):
+        df = read_mysql_table(table_name)
+        data_content = df['review']
+        # casefolding
+        data_casefolding = data_content.str.lower()
+        data_casefolding.head()
+        #url
+        filtering_url = [re.sub(r'''(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'".,<>?«»“”‘’]))''', " ", str(tweet)) for tweet in data_casefolding]
+        #cont
+        filtering_cont = [re.sub(r'\(cont\)'," ", tweet)for tweet in filtering_url]
+        #punctuatuion
+        filtering_punctuation = [re.sub('[!"”#$%&’()*+,-./:;<=>?@[\]^_`{|}~]', ' ', tweet) for tweet in filtering_cont]
+        #  hapus #tagger
+        filtering_tagger = [re.sub(r'#([^\s]+)', '', tweet) for tweet in filtering_punctuation]
+        #numeric
+        filtering_numeric = [re.sub(r'\d+', ' ', tweet) for tweet in filtering_tagger]
+        # # filtering RT , @ dan #
+        # fungsi_clen_rt = lambda x: re.compile('\#').sub('', re.compile('rt @').sub('@', x, count=1).strip())
+        # clean = [fungsi_clen_rt for tweet in filtering_numeric]
+        data_filtering = pd.Series(filtering_numeric)
+        # #tokenize
+        tknzr = TweetTokenizer()
+        data_tokenize = [tknzr.tokenize(tweet) for tweet in data_filtering]
+        data_tokenize
+        #slang word
+        path_dataslang = open("./modelai/kamus_kata.csv")
+        dataslang = pd.read_csv(path_dataslang, encoding = 'utf-8', header=None, sep=";")
+        def replaceSlang(word):
+            if word in list(dataslang[0]):
+                indexslang = list(dataslang[0]).index(word)
+                return dataslang[1][indexslang]
+            else:
+                return word
+            
+        data_formal = []
+        for data in data_tokenize:
+            data_clean = [replaceSlang(word) for word in data]
+            data_formal.append(data_clean)
+        len_data_formal = len(data_formal)
+        # print(data_formal)
+        # len_data_formal
+
+        nltk.download('stopwords')
+        default_stop_words = nltk.corpus.stopwords.words('indonesian')
+        stopwords = set(default_stop_words)
+
+        def removeStopWords(line, stopwords):
+            words = []
+            for word in line:  
+                word=str(word)
+                word = word.strip()
+                if word not in stopwords and word != "" and word != "&":
+                    words.append(word)
+
+            return words
+        reviews = [removeStopWords(line,stopwords) for line in data_formal]
+
+        # Specify the file path of the pickle file
+        file_path = 'modelai/reviews.pkl'
+
+        # Read the pickle file
+        with open(file_path, 'rb') as file:
+            data_train = pickle.load(file)
+            
+        # pembuatan vector kata
+        vectorizer = TfidfVectorizer()
+        train_vector = vectorizer.fit_transform(data_train)
+        reviews2 = [" ".join(r) for r in reviews]
+
+        load_model = pickle.load(open('modelai/revisi_hasil_sentimen.pkl','rb'))
+
+        result = []
+
+        for test in reviews2:
+            test_data = [str(test)]
+            test_vector = vectorizer.transform(test_data)
+            pred = load_model.predict(test_vector)
+            result.append(pred[0])
+            
+        unique_labels(result)
+
+        df['label'] = result
+
+        def delete_all_data_from_table(table, host='localhost', user='root', password='', database='review'):
+            # Establish a connection to the MySQL database
+            connection = pymysql.connect(
+                host=host,
+                user=user,
+                password=password,
+                database=database
+            )
+            
+            # Create a cursor object to execute SQL queries
+            cursor = connection.cursor()
+            
+            # Delete all data from the specified table
+            query = f"DELETE FROM {table}"
+            cursor.execute(query)
+            
+            # Commit the changes
+            connection.commit()
+            
+            # Close the cursor and the database connection
+            cursor.close()
+            connection.close()
+
+        delete_all_data_from_table('input_review')
+
+        def insert_df_into_hasil_model(df, host='localhost', user='root', password='', database='review'):
+        # Establish a connection to the MySQL database
+            connection = pymysql.connect(
+                host=host,
+                user=user,
+                password=password,
+                database=database
+            )
+
+        # Create a cursor object to execute SQL queries
+            cursor = connection.cursor()
+
+        # Iterate through each row in the DataFrame and insert it into the 'hasil_model' table
+            for index, row in df.iterrows():
+                query = "INSERT INTO hasil_model (id_review, nama, tanggal, review, label) VALUES (%s, %s, %s, %s, %s)"
+                cursor.execute(query, (row['id_review'], row['nama'], row['tanggal'], row['review'], row['label']))
+
+        # Commit the changes
+            connection.commit()
+
+        # Close the cursor and the database connection
+            cursor.close()
+            connection.close()
+
+        insert_df_into_hasil_model(df)
+
+        table_name = 'hasil_model'
+        hasil_df = read_mysql_table(table_name)
+        hasil_df.to_csv('modelai/hasil_model_baru.csv')
+        data = pd.read_csv('modelai/hasil_model_baru.csv')
+    else:
+        # Membaca data dari file CSV
+        data = pd.read_csv('modelai/hasil_model_baru.csv')
+
+    data = data[['review', 'label']]
+    # Menghitung jumlah data dengan label positif, negatif, dan netral
+    jumlah_positif = len(data[data['label'] == 1])
+    jumlah_negatif = len(data[data['label'] == 0])
+    jumlah_netral = len(data[data['label'] == -1])
+
+    # Membuat bar chart dengan warna yang berbeda
+    # fig, ax = plt.subplots()
+    # labels = ['Positif (1)', 'Negatif (0)', 'Netral (-1)']
+    # jumlah_data = [jumlah_positif, jumlah_negatif, jumlah_netral]
+    # colors = ['green', 'red', 'gray']
+    # ax.bar(labels, jumlah_data, color=colors)
+
+    # # Simpan grafik ke sebuah file untuk ditampilkan pada halaman web
+    # graph_file = 'static/graph.png'
+    # plt.savefig(graph_file)
+
+    return jsonify({
+            'jumlah_positif': jumlah_positif,
+            'jumlah_negatif': jumlah_negatif,
+            'jumlah_netral': jumlah_netral
+        })
+
 
 
 @app.route('/chatbot', methods=['POST'])
@@ -21,156 +214,4 @@ def chatbot():
 api.add_resource(Predict, '/predict', methods=['POST'])
 
 
-#TAMBAH DATA ARTIKEL 
-@app.route('/artikel', methods=['POST'])
-def tambah_artikel():
-    data = request.json
-    gambar = data.get('gambar')
-    judul = data.get('judul')
-    isi = data.get('isi')
-    category_id = data.get('category_id')
-    artikel_baru = ArtikelController.tambah_artikel(gambar, judul, isi, category_id)
-    return jsonify({'message': 'Kategori berhasil ditambahkan', 
-                    'kategori': 
-                    {'nama': artikel_baru.gambar,
-                     'judu': artikel_baru.judul ,
-                     'isi': artikel_baru.isi,
-                     'catagory': artikel_baru.category_id}}), 200
 
-#GET SEMUA DATA ARTIKEL
-@app.route('/artikel', methods=['GET'])
-def dapatkan_semua_artikel():
-    semua_artikel = ArtikelController.dapatkan_semua_artikel()
-    artikel_list = []
-    for artikel in semua_artikel:
-        artikel_dict = {
-            'id': artikel.id,
-            'gambar': artikel.gambar,
-            'judul': artikel.judul,
-            'isi': artikel.isi,
-            'created_at': artikel.created_at,
-            'update_at': artikel.update_at,
-            'category_id': artikel.category_id
-        }
-        artikel_list.append(artikel_dict)
-
-    return jsonify(artikel_list), 200
-
-##get data artikel by ID
-@app.route('/artikel/<int:artikel_id>', methods=['GET'])
-def dapatkan_artikel_by_id(artikel_id):
-    artikel = ArtikelController.dapatkan_artikel_by_id(artikel_id)
-    if artikel is not None:
-        artikel_dict = {
-            'id': artikel.id,
-            'gambar': artikel.gambar,
-            'judul': artikel.judul,
-            'isi': artikel.isi,
-            'created_at': artikel.created_at,
-            'update_at': artikel.update_at,
-            'category_id': artikel.category_id
-        }
-        return jsonify(artikel_dict), 200
-    else:
-        return jsonify({'message': 'Artikel tidak ditemukan'}), 404
-
-#UPDATE ARTIKEL 
-@app.route('/artikel/<int:artikel_id>', methods=['PUT'])
-def perbarui_artikel(artikel_id):
-    data = request.json
-    gambar = data.get('gambar')
-    judul = data.get('judul')
-    isi = data.get('isi')
-    category_id = data.get('category_id')
-
-    artikel = ArtikelController.dapatkan_artikel_by_id(artikel_id)
-    if artikel is not None:
-        ArtikelController.perbarui_artikel(artikel, gambar, judul, isi, category_id)
-        return jsonify({'message': 'Artikel berhasil diperbarui', 'artikel_id': artikel.id}), 200
-    else:
-        return jsonify({'message': 'Artikel tidak ditemukan'}), 404
-
-
-@app.route('/artikel/<int:artikel_id>', methods=['DELETE'])
-def hapus_artikel(artikel_id):
-    artikel = ArtikelController.dapatkan_artikel_by_id(artikel_id)
-    if artikel is not None:
-        ArtikelController.hapus_artikel(artikel)
-        return jsonify({'message': 'Artikel berhasil dihapus'}), 200
-    else:
-        return jsonify({'message': 'Artikel tidak ditemukan'}), 404
-    
-@app.route('/artikel/<judul>', methods=['GET'])
-def dapatkan_artikel_by_judul(judul):
-    artikel = ArtikelController.dapatkan_artikel_by_judul(judul)
-
-    if artikel:
-        # Jika artikel ditemukan, kembalikan data artikel dalam format JSON
-        return jsonify({
-            'status': 'success',
-            'data': {
-                'id': artikel.id,
-                'judul': artikel.judul,
-                'gambar': artikel.gambar,
-                'isi': artikel.isi,
-                'created_at': artikel.created_at,
-                'update_at': artikel.update_at,
-                'category_id': artikel.category_id,
-                # 'nama': artikel.nama  # Sertakan nama jika diperlukan
-            }
-        }), 200
-    else:
-        # Jika artikel tidak ditemukan, kembalikan pesan error
-        return jsonify({
-            'status': 'error',
-            'message': 'Artikel tidak ditemukan.'
-        }), 404
-
-
-from app.controller.CatagoryController import CategoryController
-
-@app.route('/category', methods=['POST'])
-def tambah_category():
-    data = request.json
-    nama = data.get('nama')
-    deskripsi = data.get('deskripsi')
-    
-    category_baru = CategoryController.tambah_category(nama, deskripsi)
-    return jsonify({'message': 'Kategori berhasil ditambahkan', 'kategori': {'nama': category_baru.nama, 'deskripsi': category_baru.deskripsi}}), 201
-
-
-@app.route('/category', methods=['GET'])
-def dapatkan_semua_category():
-    semua_kategori = CategoryController.dapatkan_semua_category()
-    return jsonify([{'id': kategori.id, 'nama': kategori.nama, 'deskripsi': kategori.deskripsi} for kategori in semua_kategori]), 200
-
-
-@app.route('/category/<int:category_id>', methods=['GET'])
-def dapatkan_category_by_id(category_id):
-    kategori = CategoryController.dapatkan_category_by_id(category_id)
-    if kategori is not None:
-        return jsonify(kategori.__dict__), 200
-    else:
-        return jsonify({'message': 'Kategori tidak ditemukan'}), 404
-
-@app.route('/category/<int:category_id>', methods=['PUT'])
-def perbarui_category(category_id):
-    data = request.json
-    nama = data.get('nama')
-    deskripsi = data.get('deskripsi')
-
-    kategori = CategoryController.dapatkan_category_by_id(category_id)
-    if kategori is not None:
-        kategori = CategoryController.perbarui_category(kategori, nama, deskripsi)
-        return jsonify({'message': 'Kategori berhasil diperbarui', 'kategori': kategori.__dict__}), 200
-    else:
-        return jsonify({'message': 'Kategori tidak ditemukan'}), 404
-
-@app.route('/category/<int:category_id>', methods=['DELETE'])
-def hapus_category(category_id):
-    kategori = CategoryController.dapatkan_category_by_id(category_id)
-    if kategori is not None:
-        CategoryController.hapus_category(kategori)
-        return jsonify({'message': 'Kategori berhasil dihapus'}), 200
-    else:
-        return jsonify({'message': 'Kategori tidak ditemukan'}), 404
