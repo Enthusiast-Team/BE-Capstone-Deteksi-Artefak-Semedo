@@ -1,3 +1,7 @@
 /myproject
 /__pycache__
 /venv
+__pycache__
+app/__pycache__
+app_controller/__pycache__
+app/model/__pycache__
