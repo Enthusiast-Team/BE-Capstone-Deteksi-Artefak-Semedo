@@ -180,9 +180,9 @@ def index():
 
     data = data[['review', 'label']]
     # Menghitung jumlah data dengan label positif, negatif, dan netral
-    jumlah_positif = len(data[data['label'] == 1])
-    jumlah_negatif = len(data[data['label'] == 0])
-    jumlah_netral = len(data[data['label'] == -1])
+    jumlah_positif = len(data[data['label'] == 5])
+    jumlah_negatif = len(data[data['label'] == 1])
+    jumlah_netral = len(data[data['label'] == 3])
 
     # Membuat bar chart dengan warna yang berbeda
     # fig, ax = plt.subplots()

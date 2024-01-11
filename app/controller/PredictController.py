@@ -11,7 +11,6 @@ from tensorflow.keras.utils import load_img, img_to_array
 
 
 model = load_model('./modelai/modelMobileNetNew.h5')
-# # chatbot_model = load_model('./model/chatbot.h5')
 
 def model_predict(img, model):
     img = img.resize((224, 224))
@@ -39,25 +38,23 @@ target_names = ['australopithecus_aferensis',
                 'kapak_penetak',
                 'kapak_primbas']
 
-display_names = ['australopithecus_aferensis', 
-                'badak_bercula_satu', 
-                'batu_lempung_krisikan',
-                'fauna_darat_semedo',
-                'fragmen_tengkorak',
-                'fragmen_tengkorak_parential',
-                'fragmen_tengkorak_sambung_macan',
-                'fragmen_tulang_fermur_bawah',
-                'gigi_buaya',
-                'gigi_gajah',
-                'gigi_hiu',
-                'homo_erectus_ngawi',
-                'homo_habilis',
-                'homo_sapiens_wajak',
-                'kapak_penetak',
-                'kapak_primbas']
-    
-# with open('modelai/num_16class_artefak.pkl', 'rb') as f:
-#     classes_artefak = pickle.load(f)
+display_names = ['Australopithecus Aferensis', 
+                'Badak Bercula Satu', 
+                'Batu Lempung Krisikan',
+                'Fauna Darat Semedo',
+                'Fragmen Tengkorak',
+                'Fragmen Tengkorak Parential',
+                'Fragmen Tengkorak Sambung_macan',
+                'Fragmen Tulang Fermur Bawah',
+                'Gigi Buaya',
+                'Gigi Gajah',
+                'Gigi Hiu',
+                'Homo Erectus Ngawi',
+                'Homo Habilis',
+                'Homo Sapiens Wajak',
+                'Kapak Penetak',
+                'Kapak Primbas']
+
 label_mapping = dict(zip(target_names, display_names))
 
 class Predict(Resource):
